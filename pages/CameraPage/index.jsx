@@ -3,41 +3,113 @@ import { StyleSheet, Text, View, Alert, TouchableOpacity } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
 import { Entypo, Feather } from "@expo/vector-icons";
-import { Dimensions } from 'react-native';
-const { width, height } = Dimensions.get('window');
+import { Dimensions } from "react-native";
+const { width, height } = Dimensions.get("window");
 
-export default function CameraPage({navigation}) {
+export default function CameraPage({ navigation }) {
+  const [ratio, setRatio] = useState("4:3");
+  const [isRatioSet, setIsRatioSet] = useState(false);
+  const [camera, setCamera] = useState(null);
+  const [imagePadding, setImagePadding] = useState(0);
+
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
-  const isFocused = useIsFocused();
 
-  if (!permission || !permission.granted) {
-    Alert.alert(
-      "카메라 권한을 허용해주세요",
-      "카메라 권한이 없으면 현재 서비스를 이용하실 수 없어요",
-      [
-        {
-          text: "다음에 하기",
-          onPress: () => {},
-          style: "cancel",
-        },
-        {
-          text: "권한 설정하기",
-          onPress: () => {
-            requestPermission();
+  const isFocused = useIsFocused();
+  const screenRatio = height / width;
+
+  const cameraPermission = () => {
+    if (!permission || !permission.granted) {
+      Alert.alert(
+        "카메라 권한을 허용해주세요",
+        "카메라 권한이 없으면 현재 서비스를 이용하실 수 없어요",
+        [
+          {
+            text: "다음에 하기",
+            onPress: () => {},
+            style: "cancel",
           },
-        },
-      ],
-      { cancelable: false },
-    );
-  }
+          {
+            text: "권한 설정하기",
+            onPress: () => {
+              requestPermission();
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    }
+  };
+  useEffect(() => {
+    if (isFocused) {
+      cameraPermission();
+    }
+  }, [isFocused]);
+
+  const prepareRatio = async () => {
+    let desiredRatio = "4:3";
+
+    if (Platform.OS === "android") {
+      const ratios = await camera.getSupportedRatiosAsync();
+
+      let distances = {};
+      let realRatios = {};
+      let minDistance = null;
+      for (const ratio of ratios) {
+        const parts = ratio.split(":");
+        const realRatio = parseInt(parts[0]) / parseInt(parts[1]);
+        realRatios[ratio] = realRatio;
+
+        const distance = screenRatio - realRatio;
+        distances[ratio] = realRatio;
+        if (minDistance == null) {
+          minDistance = ratio;
+        } else {
+          if (distance >= 0 && distance < distances[minDistance]) {
+            minDistance = ratio;
+          }
+        }
+      }
+
+      desiredRatio = minDistance;
+
+      const remainder = Math.floor(
+        (height - realRatios[desiredRatio] * width) / 2,
+      );
+
+      setImagePadding(remainder);
+      setRatio(desiredRatio);
+      setIsRatioSet(true);
+    }
+  };
+
+  const setCameraReady = async () => {
+    if (!isRatioSet) {
+      await prepareRatio();
+    }
+  };
 
   return (
     <View style={styles.container}>
       {isFocused && (
-        <Camera style={styles.camera} type={type}>
+        <Camera
+          style={[
+            styles.camera,
+            { marginTop: imagePadding, marginBottom: imagePadding },
+          ]}
+          onCameraReady={setCameraReady}
+          ratio={ratio}
+          ref={(ref) => {
+            setCamera(ref);
+          }}
+        >
           <View style={styles.XButtonContainer}>
-            <TouchableOpacity style={styles.Xbutton} onPress={() => {navigation.navigate('Main')}}>
+            <TouchableOpacity
+              style={styles.Xbutton}
+              onPress={() => {
+                navigation.navigate("Main");
+              }}
+            >
               <Feather name="x" size={30} color="white" />
             </TouchableOpacity>
           </View>

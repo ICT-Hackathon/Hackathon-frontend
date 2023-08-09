@@ -103,7 +103,7 @@ export default function CameraPage({ navigation }) {
           body: JSON.stringify({ image: res.base64 }),
         });
         const data = await response.json();
-        console.log(data);
+        navigation.navigate("홈", { res: data.result });
       } catch (error) {
         console.log(error);
       }

@@ -4,7 +4,6 @@ import { Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
-import axios from "axios";
 const { width, height } = Dimensions.get("window");
 
 export default function CameraPage({ navigation }) {
@@ -95,7 +94,7 @@ export default function CameraPage({ navigation }) {
       const options = { quality: 0.5, base64: true };
       const res = await camera.takePictureAsync(options);
       try {
-        const response = await fetch("http://172.30.1.73:5000/apiocr", {
+        const response = await fetch("http://172.30.1.75:5000/api/ocr", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

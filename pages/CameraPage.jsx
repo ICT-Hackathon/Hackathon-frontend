@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View, Alert, TouchableOpacity } from "react-native";
-import { Camera, CameraType } from "expo-camera";
+import { Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
+import axios from "axios";
 const { width, height } = Dimensions.get("window");
 
 export default function CameraPage({ navigation }) {
@@ -12,7 +13,6 @@ export default function CameraPage({ navigation }) {
   const [camera, setCamera] = useState(null);
   const [imagePadding, setImagePadding] = useState(0);
 
-  const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
   const isFocused = useIsFocused();
@@ -40,8 +40,9 @@ export default function CameraPage({ navigation }) {
       );
     }
   };
+
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && camera) {
       cameraPermission();
     }
   }, [isFocused]);
@@ -89,6 +90,23 @@ export default function CameraPage({ navigation }) {
     }
   };
 
+  const handleCapture = async () => {
+    if (camera) {
+      const options = { quality: 0.5, base64: true };
+      const data = await camera.takePictureAsync(options);
+      axios
+        .post("http://127.0.0.1:5000/apiocr", {
+          image: data.base64,
+        })
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log("Error while sending image data to server:", error);
+        });
+    }
+  };
+
   return (
     <View style={styles.container}>
       {isFocused && (
@@ -107,14 +125,14 @@ export default function CameraPage({ navigation }) {
             <TouchableOpacity
               style={styles.Xbutton}
               onPress={() => {
-                navigation.navigate("Main");
+                navigation.navigate("홈");
               }}
             >
               <Feather name="x" size={30} color="white" />
             </TouchableOpacity>
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={handleCapture}>
               <Entypo name="camera" size={50} color="white" />
             </TouchableOpacity>
           </View>

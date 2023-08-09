@@ -93,17 +93,20 @@ export default function CameraPage({ navigation }) {
   const handleCapture = async () => {
     if (camera) {
       const options = { quality: 0.5, base64: true };
-      const data = await camera.takePictureAsync(options);
-      axios
-        .post("http://127.0.0.1:5000/apiocr", {
-          image: data.base64,
-        })
-        .then((response) => {
-          console.log(response)
-        })
-        .catch((error) => {
-          console.log("Error while sending image data to server:", error);
+      const res = await camera.takePictureAsync(options);
+      try {
+        const response = await fetch("http://172.30.1.73:5000/apiocr", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ image: res.base64 }),
         });
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

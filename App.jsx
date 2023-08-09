@@ -17,6 +17,7 @@ import Main from "./pages/Main";
 import CameraPage from "./pages/CameraPage";
 import Community from "./pages/Commuinty";
 import Survey from "./pages/Survey";
+import Register from "./pages/Register";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();

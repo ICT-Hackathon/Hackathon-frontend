@@ -94,7 +94,7 @@ export default function CameraPage({ navigation }) {
       const options = { quality: 0.5, base64: true };
       const res = await camera.takePictureAsync(options);
       try {
-        const response = await fetch("http://172.30.1.75:5000/api/ocr", {
+        const response = await fetch("http://172.30.1.73:5000/api/ocr", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TextInput,
   SafeAreaView,
-  Keyboard,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 export default function Main({ route }) {
@@ -55,7 +54,7 @@ export default function Main({ route }) {
               placeholder="여기를 눌러서 입력하세요"
               style={[
                 styles.inputBefore,
-                { textAlignVertical: "top", textAlign: "left", flexShrink:1 },
+                { textAlignVertical: "top", textAlign: "left", flexShrink: 1 },
               ]}
               value={inputVal}
               multiline={true}
@@ -63,6 +62,7 @@ export default function Main({ route }) {
               onChangeText={(text) => setInputVal(text)}
             />
           </View>
+          <View style={styles.line}></View>
           <View style={styles.leftContainer}>
             <Text style={styles.changeAB}>변경 후</Text>
             <Text style={styles.inputAfter} multiline numberOfLines={12}>
@@ -101,10 +101,8 @@ const styles = StyleSheet.create({
     fontWeight: "900",
   },
   line: {
-    position: "absolute",
     backgroundColor: "grey",
-    left: -200,
-    marginTop: 77,
+    marginTop: 150,
     width: 1000,
     height: 0.5,
     padding: 2,

@@ -3,7 +3,23 @@ import { Text, View, Pressable, StyleSheet } from "react-native";
 import { RadioButton, Appbar } from "react-native-paper";
 
 export default function Survey({ navigation, route }) {
+  const [num, setNum] = useState(0);
   const [value, setValue] = useState("first");
+  const field = [
+    { val: "first", text: "철학" },
+    { val: "second", text: "문학" },
+    { val: "third", text: "경제" },
+    { val: "four", text: "과학" },
+    { val: "five", text: "만화" },
+    { val: "six", text: "IT" },
+    { val: "seven", text: "없음" },
+  ];
+  const school = [
+    { val: "first", text: "초등학교" },
+    { val: "second", text: "중학교" },
+    { val: "third", text: "고등학교" },
+    { val: "four", text: "대학교" },
+  ];
   return (
     <View
       style={{
@@ -15,7 +31,7 @@ export default function Survey({ navigation, route }) {
     >
       <View
         style={{
-          left: -70,
+          left: -55,
           width: 500,
           justifyContent: "center",
           marginBottom: 30,
@@ -32,46 +48,38 @@ export default function Survey({ navigation, route }) {
           paddingRight: 20,
         }}
       >
-        {/* <Text style={styles.headerNum}>1 / 2</Text> */}
+        <Text style={styles.headerNum}>{num + 1} / 2</Text>
         <Text style={styles.headerText}>해당하는 사항에 체크해주세요</Text>
       </View>
       <View style={styles.toggleView}>
-        <Text style={styles.infoText}>자신의 학력 정보</Text>
+        <Text style={styles.infoText}>자신이 관심 갖는 분야</Text>
         <RadioButton.Group
           onValueChange={(newValue) => setValue(newValue)}
           value={value}
         >
-          <View style={styles.toggle}>
-            <RadioButton value="first" />
-            <Text style={styles.toggle_text}>철학</Text>
-          </View>
-          <View style={styles.toggle}>
-            <RadioButton value="second" />
-            <Text style={styles.toggle_text}>문학</Text>
-          </View>
-          <View style={styles.toggle}>
-            <RadioButton value="third" />
-            <Text style={styles.toggle_text}>경제</Text>
-          </View>
-          <View style={styles.toggle}>
-            <RadioButton value="four" />
-            <Text style={styles.toggle_text}>과학</Text>
-          </View>
-          <View style={styles.toggle}>
-            <RadioButton value="five" />
-            <Text style={styles.toggle_text}>만화</Text>
-          </View>
-          <View style={styles.toggle}>
-            <RadioButton value="six" />
-            <Text style={styles.toggle_text}>IT</Text>
-          </View>
-          <View style={styles.toggle}>
-            <RadioButton value="seven" />
-            <Text style={styles.toggle_text}>없음</Text>
-          </View>
+          {num == 0 && school.map((item) => (
+            <View style={styles.toggle} key={item.val}>
+              <RadioButton value={item.val} />
+              <Text style={styles.toggle_text}>{item.text}</Text>
+            </View>
+          ))}
+          {num == 1 && field.map((item) => (
+            <View style={styles.toggle} key={item.val}>
+              <RadioButton value={item.val} />
+              <Text style={styles.toggle_text}>{item.text}</Text>
+            </View>
+          ))}
         </RadioButton.Group>
       </View>
-      <Pressable onPress={() => navigation.navigate("Tabs")}>
+      <Pressable
+        onPress={() => {
+          if (num == 0) {
+            setNum(1);
+          } else {
+            navigation.navigate("Tabs");
+          }
+        }}
+      >
         <Text
           style={{
             marginTop: 20,

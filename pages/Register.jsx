@@ -21,11 +21,8 @@ export default function Register({ navigation, route }) {
       <Text style={styles.text}>글이 취미가 되다</Text>
       {oauthName.map((number, index) => {
         return (
-          <Pressable onPress={navigation.navigate("Survey")}>
-            <View
-              key={index}
-              style={{ flexDirection: "row", alignItems: "center" }}
-            >
+          <Pressable key={index} onPress={() => navigation.navigate("Survey")}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Image
                 style={{
                   maxHeight: index == 3 ? 20 : 35,

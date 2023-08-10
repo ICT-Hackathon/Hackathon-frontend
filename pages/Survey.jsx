@@ -15,7 +15,7 @@ export default function Survey({ navigation, route }) {
     >
       <View
         style={{
-          left: -70,
+          left: -55,
           width: 500,
           justifyContent: "center",
           marginBottom: 30,

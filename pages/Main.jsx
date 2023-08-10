@@ -8,17 +8,23 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { ActivityIndicator, MD2Colors } from "react-native-paper";
 export default function Main({ route }) {
   const { res } = route.params ? route.params : "";
   const [inputVal, setInputVal] = useState(res);
   const [changedVal, setChangedVal] = useState("");
   const [selectedValue, setSelectedValue] = useState("쉽게");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setInputVal(res);
+    if (res != "") {
+      post_gpt(res);
+    }
   }, [res]);
 
   const post_gpt = async (val) => {
+    setIsLoading(true);
     const response = await fetch("http://172.30.1.73:5000/api/gpt", {
       method: "POST",
       headers: {
@@ -28,6 +34,7 @@ export default function Main({ route }) {
     });
     const data = await response.json();
     setChangedVal(data.result);
+    setIsLoading(false);
   };
   return (
     <SafeAreaView style={styles.scroll}>
@@ -65,6 +72,9 @@ export default function Main({ route }) {
           <View style={styles.line}></View>
           <View style={styles.leftContainer}>
             <Text style={styles.changeAB}>변경 후</Text>
+            {isLoading && (
+              <ActivityIndicator style={{marginTop: 80}} size='large' animating={true} color={MD2Colors.blue800} />
+            )}
             <Text style={styles.inputAfter} multiline numberOfLines={12}>
               {changedVal}
             </Text>

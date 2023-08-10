@@ -107,6 +107,7 @@ export default function App() {
           headerShown: false,
         }}
       >
+        <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Survey" component={Survey} />
         <Stack.Screen name="Tabs" component={BottomTabs} />
       </Stack.Navigator>
